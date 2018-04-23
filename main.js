@@ -1,15 +1,72 @@
 "use strict";
   
 // returns square bipyramid (octahedron) object
-function createSquareBipyramid(material)
+function createLegArmNode(material)
 {
+    var geometry = new THREE.Geometry();
 
+    // Vectors, equals to "Coordinate" node in x3dom
+    geometry.vertices.push(new THREE.Vector3(0, 0.25, 0));
+    geometry.vertices.push(new THREE.Vector3(-0.5, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 0, -0.25));
+    geometry.vertices.push(new THREE.Vector3(0.5, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 0, 0.25));
+    geometry.vertices.push(new THREE.Vector3(0, -0.25, 0));
+
+    // Faces, equals to "IndexedFaceSet" node in x3dom
+    geometry.faces.push(new THREE.Face3(1, 4, 0));
+    geometry.faces.push(new THREE.Face3(1, 0, 2));
+    geometry.faces.push(new THREE.Face3(2, 0, 3));
+    geometry.faces.push(new THREE.Face3(3, 0, 4));
+    geometry.faces.push(new THREE.Face3(4, 1, 5));
+    geometry.faces.push(new THREE.Face3(1, 5, 5));
+    geometry.faces.push(new THREE.Face3(2, 3, 5));
+    geometry.faces.push(new THREE.Face3(3, 4, 5));
+
+    geometry.computeFaceNormals();
+
+    // Create the mesh with geometry set above and material passed in before
+    var body = new THREE.Mesh(geometry, material); 
+    body.add(createAxes(3));
+    return body;
+}
+
+function createEyeBall(material)
+{
+    var geometry = new THREE.Geometry();
+
+    // Vectors, equals to "Coordinate" node in x3dom
+    geometry.vertices.push(new THREE.Vector3(0, 0.15, 0));
+    geometry.vertices.push(new THREE.Vector3(-0.15, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 0, -0.15));
+    geometry.vertices.push(new THREE.Vector3(0.15, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 0, 0.15));
+    geometry.vertices.push(new THREE.Vector3(0, -0.15, 0));
+
+    // Faces, equals to "IndexedFaceSet" node in x3dom
+    geometry.faces.push(new THREE.Face3(1, 4, 0));
+    geometry.faces.push(new THREE.Face3(1, 0, 2));
+    geometry.faces.push(new THREE.Face3(2, 0, 3));
+    geometry.faces.push(new THREE.Face3(3, 0, 4));
+    geometry.faces.push(new THREE.Face3(4, 1, 5));
+    geometry.faces.push(new THREE.Face3(1, 5, 5));
+    geometry.faces.push(new THREE.Face3(2, 3, 5));
+    geometry.faces.push(new THREE.Face3(3, 4, 5));
+
+    geometry.computeFaceNormals();
+
+    // Create the mesh with geometry set above and material passed in before
+    var body = new THREE.Mesh(geometry, material); 
+    body.add(createAxes(3));
+    return body;
 }
 
 // returns pentagonal bipyramid (decahedron) object
-function createPentagonalBipyramid(material)
+function createBody(material)
 {
     var geometry = new THREE.Geometry();
+
+    // Vectors, equals to "Coordinate" node in x3dom
     geometry.vertices.push(new THREE.Vector3(0, 0.5, 0));
     geometry.vertices.push(new THREE.Vector3(-1, 0, 0));
     geometry.vertices.push(new THREE.Vector3(-0.309, 0, 0.951));
@@ -17,6 +74,8 @@ function createPentagonalBipyramid(material)
     geometry.vertices.push(new THREE.Vector3(0.809, 0, -0.588));
     geometry.vertices.push(new THREE.Vector3(-0.309, 0, -0.951));
     geometry.vertices.push(new THREE.Vector3(0, -0.5, 0));
+    
+    // Faces, equals to "IndexedFaceSet" node in x3dom
     geometry.faces.push(new THREE.Face3(1, 0, 5));
     geometry.faces.push(new THREE.Face3(1, 2, 0));
     geometry.faces.push(new THREE.Face3(2, 3, 0));
@@ -48,11 +107,6 @@ function createLeg(end, side, material)
 
 }
 
-// returns the torso object
-function createTorso(material)
-{
-
-}
 
 // returns the head object
 function createHead(material)
@@ -108,7 +162,6 @@ function init()
     // Create scene and camera
     var scene = new THREE.Scene();
     scene.add(createAxes(5));
-    
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000); 
     camera.position.z = 5;
 
@@ -116,7 +169,7 @@ function init()
     var material = new THREE.MeshLambertMaterial({color: 0xff9966}); 
 
     // Add body
-    var body = createPentagonalBipyramid(material);
+    var body = createBody(material);
 
     // Create light here
     var light = new THREE.AmbientLight(0xffffff);  
@@ -136,9 +189,10 @@ function init()
     var renderer = new THREE.WebGLRenderer(3);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x404040, 1);
-    document.body.appendChild(renderer.domElement); 
     renderer.render(scene, camera);
-    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setPixelRatio(window.devicePixelRatio);
+    document.body.appendChild(renderer.domElement);
+
     requestAnimationFrame(animate);
     controls.update();
 
