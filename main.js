@@ -133,11 +133,12 @@ function init()
 
     // Start to render something...
     // Create renderer
-    var renderer = new THREE.WebGLRenderer();
+    var renderer = new THREE.WebGLRenderer(3);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x404040, 1);
     document.body.appendChild(renderer.domElement); 
     renderer.render(scene, camera);
+    renderer.setPixelRatio(window.devicePixelRatio)
     requestAnimationFrame(animate);
     controls.update();
 
