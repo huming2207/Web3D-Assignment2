@@ -26,9 +26,9 @@ function createLegArmNode(material)
     geometry.computeFaceNormals();
 
     // Create the mesh with geometry set above and material passed in before
-    var body = new THREE.Mesh(geometry, material); 
-    body.add(createAxes(3));
-    return body;
+    var arm = new THREE.Mesh(geometry, material); 
+    arm.add(createAxes(3));
+    return arm;
 }
 
 function createEyeBall(material)
@@ -56,9 +56,9 @@ function createEyeBall(material)
     geometry.computeFaceNormals();
 
     // Create the mesh with geometry set above and material passed in before
-    var body = new THREE.Mesh(geometry, material); 
-    body.add(createAxes(3));
-    return body;
+    var eye = new THREE.Mesh(geometry, material); 
+    eye.add(createAxes(3));
+    return eye;
 }
 
 // returns pentagonal bipyramid (decahedron) object
@@ -91,13 +91,27 @@ function createBody(material)
     // Create the mesh with geometry set above and material passed in before
     var body = new THREE.Mesh(geometry, material); 
     body.add(createAxes(3));
-    body.translateX(1);
     return body;
 }
 
-// returns joint axes object
-function createJoint(name)
+function createPaw(material)
 {
+    var geometry = new THREE.Geometry();
+    
+    // Vectors again, equals to "Coordinate" node in x3dom
+    geometry.vertices.push(new THREE.Vector3(0, 0, 0.25));
+    geometry.vertices.push(new THREE.Vector3(0, 0, -0.25));
+    geometry.vertices.push(new THREE.Vector3(-0.5, 0, 0));
+
+    // Faces, equals to IndexedFaceSet node in x3dom
+    geometry.faces.push(new THREE.Face3(0, 1, 2));
+    geometry.faces.push(new THREE.Face3(2, 1, 0));
+    geometry.computeFaceNormals();
+
+    // Create the mesh with geometry set above and material pssed in before
+    var paw = new THREE.Mesh(geometry, material);
+    paw.add(createAxes(3));
+    return paw;
 }
 
 // returns a whole leg
