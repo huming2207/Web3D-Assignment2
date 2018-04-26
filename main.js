@@ -98,7 +98,6 @@ function createBody(material)
 // returns joint axes object
 function createJoint(name)
 {
-
 }
 
 // returns a whole leg
