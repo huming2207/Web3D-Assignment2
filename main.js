@@ -62,7 +62,7 @@ function createEyeBall(material)
 }
 
 // returns pentagonal bipyramid (decahedron) object
-function createBody(material)
+function createTorso(material)
 {
     var geometry = new THREE.Geometry();
 
@@ -114,21 +114,33 @@ function createPaw(material)
     return paw;
 }
 
-// returns a whole leg
-function createLeg(end, side, material)
+// Create pond
+function createPond(material)
 {
-
+    var geometry = new THREE.BoxGeometry(20, 20, 0.1);
+    var pond = new THREE.Mesh(geometry, material);
+    pond.add(createAxes(5));
+    return pond;
 }
 
-
-// returns the head object
-function createHead(material)
+// Create leg, which is a map with 3 items
+function createLeg(material)
 {
+    var legMap = new Map();
 
+    // Hip node: the one near torso
+    var hipNode = createLegArmNode(material);
+    
+
+    // Knee node: the one in the middle
+    var kneeNode = createLegArmNode(material);
+
+    // Ankle Node: the one near the foot/paw/whatever
+    var ankleNode = createLegArmNode(material);
 }
 
-// Uses the other functions to create the frog
-function createFrog(material)
+// Merge components to body
+function createBody()
 {
 
 }
@@ -182,7 +194,7 @@ function init()
     var material = new THREE.MeshLambertMaterial({color: 0xff9966}); 
 
     // Add body
-    var body = createBody(material);
+    var body = createTorso(material);
 
     // Create light here
     var light = new THREE.AmbientLight(0xffffff);  
