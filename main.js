@@ -22,7 +22,7 @@ function createLegArmNode(material)
     geometry.faces.push(new THREE.Face3(2, 0, 3));
     geometry.faces.push(new THREE.Face3(3, 0, 4));
     geometry.faces.push(new THREE.Face3(4, 1, 5));
-    geometry.faces.push(new THREE.Face3(1, 5, 5));
+    geometry.faces.push(new THREE.Face3(1, 2, 5));
     geometry.faces.push(new THREE.Face3(2, 3, 5));
     geometry.faces.push(new THREE.Face3(3, 4, 5));
 
