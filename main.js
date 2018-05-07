@@ -1,4 +1,7 @@
 "use strict";
+
+var mainMaterial;
+var scene;
   
 // returns square bipyramid (octahedron) object
 function createLegArmNode(material)
@@ -57,7 +60,7 @@ function createEyeBall(material)
 
     // Create the mesh with geometry set above and material passed in before
     var eye = new THREE.Mesh(geometry, material); 
-    eye.add(createAxes(3));
+    eye.add(createAxes(1));
     return eye;
 }
 
@@ -111,6 +114,7 @@ function createPaw(material)
     // Create the mesh with geometry set above and material pssed in before
     var paw = new THREE.Mesh(geometry, material);
     paw.add(createAxes(3));
+    scene.add(paw);
     return paw;
 }
 
@@ -124,7 +128,6 @@ function createPond(material)
 }
 
 // Create leg, which is a map with 3 items
-// To-do: add translation
 function createLeg(material)
 {
     var legMap = new Map();
@@ -138,16 +141,19 @@ function createLeg(material)
     var kneeNode = createLegArmNode(material);
     kneeNode.position.set(1, 0, 0);
     legMap.set("knee", kneeNode);
+    hipNode.add(kneeNode);
 
     // Ankle Node: the one near the foot/paw/whatever
     var ankleNode = createLegArmNode(material);
-    ankleNode.position.set(2, 0, 0);
+    ankleNode.position.set(1, 0, 0);
     legMap.set("ankle", ankleNode);
+    kneeNode.add(ankleNode);
     
     // Paw node: the hand for the toad
     var pawNode = createPaw(material);
-    pawNode.position.set(3, 0, 0);
+    pawNode.position.set(1, 0, 0);
     legMap.set("paw", pawNode);
+    ankleNode.add(pawNode);
 
     return legMap;
 }
@@ -166,36 +172,54 @@ function createArm(material)
     // Ankle Node: the one near the foot/paw/whatever
     var ankleNode = createLegArmNode(material);
     ankleNode.position.set(1, 0, 0);
+    hipNode.add(ankleNode);
     armMap.set("ankle", ankleNode);    
 
     // Paw node: the hand for the toad
     var pawNode = createPaw(material);
-    pawNode.position.set(2, 0, 0);
-    armMap.add("paw", pawNode);
+    pawNode.position.set(1, 0, 0);
+    ankleNode.add(pawNode);
+    armMap.set("paw", pawNode);
 
     return armMap;
 }
 
 // Merge components to body
-function createBody()
+function createBody(torsoNode)
 {
     var bodyMap = new Map();
-    var mainMaterial = createMaterial();
+
+    // Torso
+    bodyMap.set("torso", torsoNode);
 
     // Left leg
     var leftLeg = createLeg(mainMaterial);
+    var leftLegHipNode = leftLeg.get("hip");
+    leftLegHipNode.position.set(-1.2, 0, -0.45);
+    leftLegHipNode.rotateY(2.5);
+    torsoNode.add(leftLegHipNode);
     bodyMap.set("leftLeg", leftLeg);
 
     // Right leg
     var rightLeg = createLeg(mainMaterial);
+    var rightLegHipNode = rightLeg.get("hip");
+    rightLegHipNode.position.set(-1.2, 0, 0.45);
+    rightLegHipNode.rotateY(-2.5);
+    torsoNode.add(rightLegHipNode);
     bodyMap.set("rightLeg", rightLeg);
 
     // Left arm
     var leftArm = createArm(mainMaterial);
+    var leftArmHipNode = leftArm.get("hip");
+    leftArmHipNode.position.set(1.309, 0, -0.588);
+    torsoNode.add(leftArmHipNode);
     bodyMap.set("leftArm", leftArm);
 
     // Right arm
     var rightArm = createArm(mainMaterial);
+    var rightArmHipNode = rightArm.get("hip");
+    rightArmHipNode.position.set(1.309, 0, 0.588);
+    torsoNode.add(rightArmHipNode);
     bodyMap.set("rightArm", rightArm);
 
     return bodyMap;
@@ -204,9 +228,7 @@ function createBody()
 // Create material
 function createMaterial()
 {
-    var material = new THREE.LineBasicMaterial();
-    material.vertexColors = THREE.VertexColors;
-    return material;
+    return new THREE.MeshLambertMaterial({color: 0xff9966});
 }
 
 // Create axes for each component
@@ -241,20 +263,20 @@ function init()
     console.log("Initializing...");
 
     // Create scene and camera
-    var scene = new THREE.Scene();
+    scene = new THREE.Scene();
     scene.add(createAxes(5));
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000); 
     camera.position.z = 5;
 
     // Create material with color 0xff9966 as required
-    var material = new THREE.MeshLambertMaterial({color: 0xff9966}); 
+    mainMaterial = new THREE.MeshLambertMaterial({color: 0xff9966});
 
     // Add body
-    var body = createBody();
-
+    var torsoNode = createTorso(mainMaterial);
+    var body = createBody(torsoNode);
     // Create light here
     var light = new THREE.AmbientLight(0xffffff);  
-    scene.add(body); 
+    scene.add(body.get("torso"));
     scene.add(light);
 
     // Create trackball (mouse) control
