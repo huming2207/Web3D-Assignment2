@@ -124,25 +124,81 @@ function createPond(material)
 }
 
 // Create leg, which is a map with 3 items
+// To-do: add translation
 function createLeg(material)
 {
     var legMap = new Map();
 
     // Hip node: the one near torso
     var hipNode = createLegArmNode(material);
-    
+    hipNode.position.set(0, 0, 0);
+    legMap.set("hip" ,hipNode);
 
     // Knee node: the one in the middle
     var kneeNode = createLegArmNode(material);
+    kneeNode.position.set(1, 0, 0);
+    legMap.set("knee", kneeNode);
 
     // Ankle Node: the one near the foot/paw/whatever
     var ankleNode = createLegArmNode(material);
+    ankleNode.position.set(2, 0, 0);
+    legMap.set("ankle", ankleNode);
+    
+    // Paw node: the hand for the toad
+    var pawNode = createPaw(material);
+    pawNode.position.set(3, 0, 0);
+    legMap.set("paw", pawNode);
+
+    return legMap;
+}
+
+// Create leg, which is a map with 3 items
+// To-do: add translation
+function createArm(material)
+{
+    var armMap = new Map();
+
+    // Hip node: the one near torso
+    var hipNode = createLegArmNode(material);
+    hipNode.position.set(0, 0, 0);
+    armMap.set("hip" ,hipNode);
+
+    // Ankle Node: the one near the foot/paw/whatever
+    var ankleNode = createLegArmNode(material);
+    ankleNode.position.set(1, 0, 0);
+    armMap.set("ankle", ankleNode);    
+
+    // Paw node: the hand for the toad
+    var pawNode = createPaw(material);
+    pawNode.position.set(2, 0, 0);
+    armMap.add("paw", pawNode);
+
+    return armMap;
 }
 
 // Merge components to body
 function createBody()
 {
+    var bodyMap = new Map();
+    var mainMaterial = createMaterial();
 
+    // Left leg
+    var leftLeg = createLeg(mainMaterial);
+    bodyMap.set("leftLeg", leftLeg);
+
+    // Right leg
+    var rightLeg = createLeg(mainMaterial);
+    bodyMap.set("rightLeg", rightLeg);
+
+    // Left arm
+    var leftArm = createArm(mainMaterial);
+    bodyMap.set("leftArm", leftArm);
+
+    // Right arm
+    var rightArm = createArm(mainMaterial);
+    bodyMap.set("rightArm", rightArm);
+
+    return bodyMap;
 }
 
 // Create material
@@ -194,7 +250,7 @@ function init()
     var material = new THREE.MeshLambertMaterial({color: 0xff9966}); 
 
     // Add body
-    var body = createTorso(material);
+    var body = createBody();
 
     // Create light here
     var light = new THREE.AmbientLight(0xffffff);  
