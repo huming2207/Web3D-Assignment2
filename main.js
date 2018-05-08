@@ -34,8 +34,9 @@ function createLegArmNode(material)
     return arm;
 }
 
-function createEyeBall(material)
+function createEyeBall()
 {
+    var eyeMaterial = new THREE.MeshLambertMaterial({color: 0x000000});
     var geometry = new THREE.Geometry();
 
     // Vectors, equals to "Coordinate" node in x3dom
@@ -59,7 +60,7 @@ function createEyeBall(material)
     geometry.computeFaceNormals();
 
     // Create the mesh with geometry set above and material passed in before
-    var eye = new THREE.Mesh(geometry, material); 
+    var eye = new THREE.Mesh(geometry, eyeMaterial);
     eye.add(createAxes(1));
     return eye;
 }
@@ -252,8 +253,19 @@ function createBody(torsoNode)
     // Upper head
     var upperHeadNode = createHalfHead(mainMaterial);
     upperHeadNode.translateX(1.309); // Center of torso
-    bodyMap.set("upperHead", upperHeadNode);
     torsoNode.add(upperHeadNode);
+
+    // Eyes
+    // Left eye
+    var leftEyeNode = createEyeBall();
+    leftEyeNode.position.set(0.1, 0.15, -0.15);
+    upperHeadNode.add(leftEyeNode);
+
+    // Right eye
+    var rightEyeNode = createEyeBall();
+    rightEyeNode.position.set(0.1, 0.15, 0.15);
+    upperHeadNode.add(rightEyeNode);
+    bodyMap.set("upperHead", upperHeadNode);
 
     // Lower head
     var lowerHeadNode = createHalfHead(mainMaterial);
