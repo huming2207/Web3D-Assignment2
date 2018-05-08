@@ -64,6 +64,33 @@ function createEyeBall(material)
     return eye;
 }
 
+// returns a half head ("slice" the head at x/z axis) object
+function createHalfHead(material)
+{
+    var geometry = new THREE.Geometry();
+
+    // Vectors
+    geometry.vertices.push(new THREE.Vector3(0, 0.25, 0));
+    geometry.vertices.push(new THREE.Vector3(-0.5, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 0, -0.25));
+    geometry.vertices.push(new THREE.Vector3(0.5, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 0, 0.25));
+
+    // Faces
+    geometry.faces.push(new THREE.Face3(1, 4, 0));
+    geometry.faces.push(new THREE.Face3(1, 0, 2));
+    geometry.faces.push(new THREE.Face3(2, 0, 3));
+    geometry.faces.push(new THREE.Face3(3, 0, 4));
+    geometry.faces.push(new THREE.Face3(1, 2, 3));
+    geometry.faces.push(new THREE.Face3(1, 3, 4));
+
+    geometry.computeFaceNormals();
+
+    var halfHeadNode = new THREE.Mesh(geometry, material);
+    halfHeadNode.add(createAxes(2));
+    return halfHeadNode;
+}
+
 // returns pentagonal bipyramid (decahedron) object
 function createTorso(material)
 {
@@ -221,6 +248,19 @@ function createBody(torsoNode)
     rightArmHipNode.position.set(1.309, 0, 0.588);
     torsoNode.add(rightArmHipNode);
     bodyMap.set("rightArm", rightArm);
+
+    // Upper head
+    var upperHeadNode = createHalfHead(mainMaterial);
+    upperHeadNode.translateX(1.309); // Center of torso
+    bodyMap.set("upperHead", upperHeadNode);
+    torsoNode.add(upperHeadNode);
+
+    // Lower head
+    var lowerHeadNode = createHalfHead(mainMaterial);
+    lowerHeadNode.rotateX(3.14159); // Turns around to be lower part
+    lowerHeadNode.position.set(1.309, -0.1, 0);
+    bodyMap.set("lowerHead", lowerHeadNode);
+    torsoNode.add(lowerHeadNode);
 
     return bodyMap;
 }
