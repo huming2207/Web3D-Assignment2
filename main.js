@@ -128,9 +128,7 @@ function createTorso(material)
     // Create the mesh with geometry set above and material passed in before
     var body = new THREE.Mesh(geometry, material);
 
-    // Map the texture
-    // Apply UV for mapping
-
+    // Map the texture, apply UV for mapping
     // Array of vectors to map
     var uvList = [
         new THREE.Vector2(0.5, 0.5),
@@ -142,7 +140,7 @@ function createTorso(material)
         new THREE.Vector2(0.5, 0.5)
     ];
 
-    // Add mapping to face at (x, y, z)
+    // Add mapping to face at (UV[faceId], UV[faceId], UV[faceId])
     geometry.faceVertexUvs[0].push([uvList[1], uvList[0], uvList[5]]);
     geometry.faceVertexUvs[0].push([uvList[1], uvList[2], uvList[0]]);
     geometry.faceVertexUvs[0].push([uvList[2], uvList[3], uvList[0]]);
@@ -194,125 +192,112 @@ function createPond(material)
 }
 
 // Create leg, which is a map with 3 items
-function createLeg(material)
+function createLeg(material, name)
 {
-    var legMap = new Map();
-
     // Hip node: the one near torso
     var hipNode = createLegArmNode(material);
     hipNode.position.set(0, 0, 0);
-    legMap.set("hip" ,hipNode);
+    hipNode.name = name + "_hip";
 
     // Knee node: the one in the middle
     var kneeNode = createLegArmNode(material);
     kneeNode.position.set(1, 0, 0);
-    legMap.set("knee", kneeNode);
+    kneeNode.name = name + "_knee";
     hipNode.add(kneeNode);
 
     // Ankle Node: the one near the foot/paw/whatever
     var ankleNode = createLegArmNode(material);
     ankleNode.position.set(1, 0, 0);
-    legMap.set("ankle", ankleNode);
+    ankleNode.name = name + "_ankle";
     kneeNode.add(ankleNode);
     
     // Paw node: the hand for the toad
     var pawNode = createPaw(material);
     pawNode.position.set(1, 0, 0);
-    legMap.set("paw", pawNode);
+    pawNode.name = name + "_paw";
     ankleNode.add(pawNode);
 
-    return legMap;
+    return hipNode;
 }
 
 // Create leg, which is a map with 3 items
-// To-do: add translation
-function createArm(material)
+function createArm(material, name)
 {
-    var armMap = new Map();
-
     // Hip node: the one near torso
     var hipNode = createLegArmNode(material);
     hipNode.position.set(0, 0, 0);
-    armMap.set("hip" ,hipNode);
+    hipNode.name = name + "_hip";
 
     // Ankle Node: the one near the foot/paw/whatever
     var ankleNode = createLegArmNode(material);
     ankleNode.position.set(1, 0, 0);
+    ankleNode.name = name + "_ankle";
     hipNode.add(ankleNode);
-    armMap.set("ankle", ankleNode);    
 
     // Paw node: the hand for the toad
     var pawNode = createPaw(material);
     pawNode.position.set(1, 0, 0);
+    pawNode.name = name + "_paw";
     ankleNode.add(pawNode);
-    armMap.set("paw", pawNode);
 
-    return armMap;
+    return hipNode;
 }
 
 // Merge components to body
 function createBody(torsoNode)
 {
-    var bodyMap = new Map();
-
     // Torso
-    bodyMap.set("torso", torsoNode);
+    torsoNode.name = "torso";
 
     // Left leg
-    var leftLeg = createLeg(mainMaterial);
-    var leftLegHipNode = leftLeg.get("hip");
-    leftLegHipNode.position.set(-1.2, 0, -0.45);
-    leftLegHipNode.rotateY(2.5);
-    torsoNode.add(leftLegHipNode);
-    bodyMap.set("leftLeg", leftLeg);
+    var leftLeg = createLeg(mainMaterial, "leftLeg");
+    leftLeg.position.set(-1.2, 0, -0.45);
+    leftLeg.rotateY(2.5);
+    torsoNode.add(leftLeg);
 
     // Right leg
-    var rightLeg = createLeg(mainMaterial);
-    var rightLegHipNode = rightLeg.get("hip");
-    rightLegHipNode.position.set(-1.2, 0, 0.45);
-    rightLegHipNode.rotateY(-2.5);
-    torsoNode.add(rightLegHipNode);
-    bodyMap.set("rightLeg", rightLeg);
+    var rightLeg = createLeg(mainMaterial, "rightLeg");
+    rightLeg.position.set(-1.2, 0, 0.45);
+    rightLeg.rotateY(-2.5);
+    torsoNode.add(rightLeg);
 
     // Left arm
-    var leftArm = createArm(mainMaterial);
-    var leftArmHipNode = leftArm.get("hip");
-    leftArmHipNode.position.set(1.309, 0, -0.588);
-    torsoNode.add(leftArmHipNode);
-    bodyMap.set("leftArm", leftArm);
+    var leftArm = createArm(mainMaterial, "leftArm");
+    leftArm.position.set(1.309, 0, -0.588);
+    torsoNode.add(leftArm);
 
     // Right arm
-    var rightArm = createArm(mainMaterial);
-    var rightArmHipNode = rightArm.get("hip");
-    rightArmHipNode.position.set(1.309, 0, 0.588);
-    torsoNode.add(rightArmHipNode);
-    bodyMap.set("rightArm", rightArm);
+    var rightArm = createArm(mainMaterial, "rightArm");
+    rightArm.position.set(1.309, 0, 0.588);
+    torsoNode.add(rightArm);
 
     // Upper head
     var upperHeadNode = createHalfHead(mainMaterial);
     upperHeadNode.translateX(1.309); // Center of torso
+    upperHeadNode.name = "upperHead";
     torsoNode.add(upperHeadNode);
 
     // Eyes
     // Left eye
     var leftEyeNode = createEyeBall();
     leftEyeNode.position.set(0.1, 0.15, -0.15);
+    leftEyeNode.name = "leftEye";
     upperHeadNode.add(leftEyeNode);
 
     // Right eye
     var rightEyeNode = createEyeBall();
     rightEyeNode.position.set(0.1, 0.15, 0.15);
+    rightEyeNode.name = "rightEye";
     upperHeadNode.add(rightEyeNode);
-    bodyMap.set("upperHead", upperHeadNode);
 
     // Lower head
     var lowerHeadNode = createHalfHead(mainMaterial);
     lowerHeadNode.rotateX(3.14159); // Turns around to be lower part
     lowerHeadNode.position.set(1.309, -0.1, 0);
-    bodyMap.set("lowerHead", lowerHeadNode);
+    lowerHeadNode.name = "lowerHead";
     torsoNode.add(lowerHeadNode);
 
-    return bodyMap;
+    return torsoNode;
 }
 
 // Create axes for each component
@@ -360,9 +345,10 @@ function init()
     // Add body
     var torsoNode = createTorso(torsoMaterial);
     var body = createBody(torsoNode);
+
     // Create light here
     var light = new THREE.AmbientLight(0xffffff);  
-    scene.add(body.get("torso"));
+    scene.add(body);
     scene.add(light);
 
     // Create trackball (mouse) control
