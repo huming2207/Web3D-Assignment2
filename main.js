@@ -351,6 +351,9 @@ function init()
     scene.add(body);
     scene.add(light);
 
+    // Log out all body stuff for debugging
+    console.log(body);
+
     // Create trackball (mouse) control
     var controls = new THREE.TrackballControls(camera);
     controls.rotateSpeed = 1.0;
@@ -402,6 +405,31 @@ function onKeyUp(event)
             mainMaterial.color.setHex(0x378015); // Set back to white
             break;
         }
+
+        // #72, key H, hip move
+        case 72: {
+            break;
+        }
+
+        // #75, key K, knee move
+        case 75: {
+            break;
+        }
+
+        // #65, key A, ankle move
+        case 65: {
+            break;
+        }
+
+        // #84, key T, toe (paw) move
+        case 84: {
+            break;
+        }
+
+        // Default: log it in console...
+        default: {
+            console.log("Key Up event: key #" + String(event.keyCode) + " is up.");
+        }
     }
 
 }
@@ -424,6 +452,31 @@ function onKeyDown(event)
         case 76: {
             mainMaterial.color.setHex(0xff9966);
             break;
+        }
+
+        // #72, key H, hip move
+        case 72: {
+            break;
+        }
+
+        // #75, key K, knee move
+        case 75: {
+            break;
+        }
+
+        // #65, key A, ankle move
+        case 65: {
+            break;
+        }
+
+        // #84, key T, toe (paw) move
+        case 84: {
+            break;
+        }
+
+        // Default: log it in console...
+        default: {
+            console.log("Key Down event: key #" + String(event.keyCode) + " is down.");
         }
     }
 }
