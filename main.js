@@ -134,7 +134,8 @@ function createTorso(material)
         new THREE.Vector2(0.905, 0.795),
         new THREE.Vector2(0.905, 0.205),
         new THREE.Vector2(0.345, 0.025),
-        new THREE.Vector2(0.5, 0.5)];
+        new THREE.Vector2(0.5, 0.5)
+    ];
 
     // Add mapping to face at (x, y, z)
     geometry.faceVertexUvs[0].push([uvList[1], uvList[0], uvList[5]]);
@@ -347,8 +348,8 @@ function init()
     camera.position.z = 5;
 
     // Create material with color 0xff9966 as required
-    mainMaterial = new THREE.MeshLambertMaterial({color: 0xff9966});
-    torsoMaterial = new THREE.MeshLambertMaterial({color: 0xff9966});
+    mainMaterial = new THREE.MeshLambertMaterial({color: 0x378015});
+    torsoMaterial = new THREE.MeshLambertMaterial();
 
     // Add body
     var torsoNode = createTorso(torsoMaterial);
