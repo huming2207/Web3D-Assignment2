@@ -2,7 +2,13 @@
 
 var mainMaterial;
 var torsoMaterial;
+var eyeMaterial;
+
 var scene;
+
+// Register key stroke event handlers
+document.onkeyup = onKeyUp;
+document.onkeydown = onKeyDown;
   
 // returns square bipyramid (octahedron) object
 function createLegArmNode(material)
@@ -37,7 +43,6 @@ function createLegArmNode(material)
 
 function createEyeBall()
 {
-    var eyeMaterial = new THREE.MeshLambertMaterial({color: 0x000000});
     var geometry = new THREE.Geometry();
 
     // Vectors, equals to "Coordinate" node in x3dom
@@ -350,6 +355,7 @@ function init()
     // Create material with color 0xff9966 as required
     mainMaterial = new THREE.MeshLambertMaterial({color: 0x378015});
     torsoMaterial = new THREE.MeshLambertMaterial();
+    eyeMaterial = new THREE.MeshLambertMaterial({color: 0x000000});
 
     // Add body
     var torsoNode = createTorso(torsoMaterial);
@@ -392,4 +398,47 @@ function init()
     }
 }
 
+// Handle key up event (restore status)
+function onKeyUp(event)
+{
+    switch(event.keyCode) {
+
+        // #77, key M, wire frame mode
+        case 77: {
+            mainMaterial.wireframe = false;
+            torsoMaterial.wireframe = false;
+            eyeMaterial.wireframe = false;
+            break;
+        }
+
+        // #76, key L, basic debug mode
+        case 76: {
+            mainMaterial.color.setHex(0x378015); // Set back to white
+            break;
+        }
+    }
+
+}
+
+// Handle key down event (apply status)
+// Key code reference from MDN: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
+function onKeyDown(event)
+{
+    switch(event.keyCode) {
+
+        // #77, key M, wire frame mode
+        case 77: {
+            mainMaterial.wireframe = true;
+            torsoMaterial.wireframe = true;
+            eyeMaterial.wireframe = true;
+            break;
+        }
+
+        // #76, key L, basic debug mode
+        case 76: {
+            mainMaterial.color.setHex(0xff9966);
+            break;
+        }
+    }
+}
 
