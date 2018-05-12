@@ -1,6 +1,7 @@
 "use strict";
 
 var mainMaterial;
+var torsoMaterial;
 var scene;
   
 // returns square bipyramid (octahedron) object
@@ -120,7 +121,38 @@ function createTorso(material)
     geometry.computeFaceNormals();
 
     // Create the mesh with geometry set above and material passed in before
-    var body = new THREE.Mesh(geometry, material); 
+    var body = new THREE.Mesh(geometry, material);
+
+    // Map the texture
+    // Apply UV for mapping
+
+    // Array of vectors to map
+    var uvList = [
+        new THREE.Vector2(0.5, 0.5),
+        new THREE.Vector2(0, 0.5),
+        new THREE.Vector2(0.345, 0.975),
+        new THREE.Vector2(0.905, 0.795),
+        new THREE.Vector2(0.905, 0.205),
+        new THREE.Vector2(0.345, 0.025),
+        new THREE.Vector2(0.5, 0.5)];
+
+    // Add mapping to face at (x, y, z)
+    geometry.faceVertexUvs[0].push([uvList[1], uvList[0], uvList[5]]);
+    geometry.faceVertexUvs[0].push([uvList[1], uvList[2], uvList[0]]);
+    geometry.faceVertexUvs[0].push([uvList[2], uvList[3], uvList[0]]);
+    geometry.faceVertexUvs[0].push([uvList[3], uvList[4], uvList[0]]);
+    geometry.faceVertexUvs[0].push([uvList[4], uvList[5], uvList[0]]);
+    geometry.faceVertexUvs[0].push([uvList[5], uvList[6], uvList[1]]);
+    geometry.faceVertexUvs[0].push([uvList[6], uvList[2], uvList[1]]);
+    geometry.faceVertexUvs[0].push([uvList[6], uvList[3], uvList[2]]);
+    geometry.faceVertexUvs[0].push([uvList[6], uvList[4], uvList[3]]);
+    geometry.faceVertexUvs[0].push([uvList[6], uvList[5], uvList[4]]);
+
+    // Initialise the texture loader
+    var textureLoader = new THREE.TextureLoader();
+
+    // Load the texture
+    body.material.map = textureLoader.load("./penta.png");
     body.add(createAxes(3));
     return body;
 }
@@ -277,12 +309,6 @@ function createBody(torsoNode)
     return bodyMap;
 }
 
-// Create material
-function createMaterial()
-{
-    return new THREE.MeshLambertMaterial({color: 0xff9966});
-}
-
 // Create axes for each component
 function createAxes(length)
 {
@@ -322,9 +348,10 @@ function init()
 
     // Create material with color 0xff9966 as required
     mainMaterial = new THREE.MeshLambertMaterial({color: 0xff9966});
+    torsoMaterial = new THREE.MeshLambertMaterial({color: 0xff9966});
 
     // Add body
-    var torsoNode = createTorso(mainMaterial);
+    var torsoNode = createTorso(torsoMaterial);
     var body = createBody(torsoNode);
     // Create light here
     var light = new THREE.AmbientLight(0xffffff);  
