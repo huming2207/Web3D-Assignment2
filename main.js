@@ -4,7 +4,8 @@ var mainMaterial;
 var torsoMaterial;
 var eyeMaterial;
 
-var scene;
+var scene; // general scene
+var selectedNodes; // e.g. hip or knee
 
 // Register key stroke event handlers
 document.onkeyup = onKeyUp;
@@ -266,13 +267,13 @@ function createBody(torsoNode)
     // Left leg
     var leftLeg = createLeg(mainMaterial, "leftLeg");
     leftLeg.position.set(-1.2, 0, -0.45);
-    leftLeg.rotateY(2.5);
+    leftLeg.rotation.y = 2.5;
     torsoNode.add(leftLeg);
 
     // Right leg
     var rightLeg = createLeg(mainMaterial, "rightLeg");
     rightLeg.position.set(-1.2, 0, 0.45);
-    rightLeg.rotateY(-2.5);
+    rightLeg.rotation.y = -2.5;
     torsoNode.add(rightLeg);
 
     // Left arm
@@ -454,31 +455,41 @@ function onKeyDown(event)
 
         // #72, key H, hip move
         case 72: {
+            selectedNodes = "hip";
+            console.log("Set selected node type to " + selectedNodes);
             break;
         }
 
         // #75, key K, knee move
         case 75: {
+            selectedNodes = "knee";
+            console.log("Set selected node type to " + selectedNodes);
             break;
         }
 
         // #65, key A, ankle move
         case 65: {
+            selectedNodes = "ankle";
+            console.log("Set selected node type to " + selectedNodes);
             break;
         }
 
         // #84, key T, toe (paw) move
         case 84: {
+            selectedNodes = "paw";
+            console.log("Set selected node type to " + selectedNodes);
             break;
         }
 
         // #107, plus key
-        case 107: {
+        case 187: {
+            increaseJointZ();
             break;
         }
 
         // #109, minus key
-        case 109: {
+        case 189: {
+            decreaseJointZ();
             break;
         }
 
@@ -487,7 +498,36 @@ function onKeyDown(event)
             console.log("Key Down event: key #" + String(event.keyCode) + " is down.");
         }
     }
-
-
 }
 
+function increaseJointZ()
+{
+    var maximum = 0;
+
+    if(selectedNodes === "knee" || selectedNodes === "ankle") {
+        maximum = 3.14;
+    }
+
+    scene.traverse(function (object) {
+        if(object.name.includes(selectedNodes) && object.rotation.z < maximum) {
+            object.rotation.z = object.rotation.z + 0.1;
+            console.log("Rotating z-axis for " + object.name + ", radian value " + String(object.rotation.z));
+        }
+    });
+}
+
+function decreaseJointZ()
+{
+    var minimum = -1.57;
+
+    if(selectedNodes === "knee" || selectedNodes === "ankle") {
+        minimum = -3.14;
+    }
+
+    scene.traverse(function (object) {
+        if(object.name.includes(selectedNodes) && object.rotation.z > minimum) {
+            object.rotation.z = object.rotation.z - 0.1;
+            console.log("Rotating z-axis for " + object.name + ", radian value " + String(object.rotation.z));
+        }
+    });
+}
