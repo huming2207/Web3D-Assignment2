@@ -37,7 +37,7 @@ function createLegArmNode(material)
 
     // Create the mesh with geometry set above and material passed in before
     var arm = new THREE.Mesh(geometry, material); 
-    arm.add(createAxes(3));
+    // arm.add(createAxes(3));
     return arm;
 }
 
@@ -177,7 +177,7 @@ function createPaw(material)
 
     // Create the mesh with geometry set above and material pssed in before
     var paw = new THREE.Mesh(geometry, material);
-    paw.add(createAxes(3));
+    // paw.add(createAxes(3));
     scene.add(paw);
     return paw;
 }
@@ -195,26 +195,34 @@ function createPond(material)
 function createLeg(material, name)
 {
     // Hip node: the one near torso
-    var hipNode = createLegArmNode(material);
+    var hipNode = createAxes(1);
+    var hipMesh = createLegArmNode(material);
     hipNode.position.set(0, 0, 0);
     hipNode.name = name + "_hip";
+    hipNode.add(hipMesh)
 
     // Knee node: the one in the middle
-    var kneeNode = createLegArmNode(material);
+    var kneeNode = createAxes(1);
+    var kneeMesh = createLegArmNode(material);
     kneeNode.position.set(1, 0, 0);
     kneeNode.name = name + "_knee";
+    kneeNode.add(kneeMesh);
     hipNode.add(kneeNode);
 
     // Ankle Node: the one near the foot/paw/whatever
-    var ankleNode = createLegArmNode(material);
+    var ankleNode = createAxes(1);
+    var ankleMesh = createLegArmNode(material);
     ankleNode.position.set(1, 0, 0);
     ankleNode.name = name + "_ankle";
+    ankleNode.add(ankleMesh);
     kneeNode.add(ankleNode);
     
     // Paw node: the hand for the toad
-    var pawNode = createPaw(material);
+    var pawNode = createAxes(1);
+    var pawMesh = createPaw(material);
     pawNode.position.set(1, 0, 0);
     pawNode.name = name + "_paw";
+    pawNode.add(pawMesh);
     ankleNode.add(pawNode);
 
     return hipNode;
@@ -224,20 +232,26 @@ function createLeg(material, name)
 function createArm(material, name)
 {
     // Hip node: the one near torso
-    var hipNode = createLegArmNode(material);
+    var hipNode = createAxes(1);
+    var hipMesh = createLegArmNode(material);
     hipNode.position.set(0, 0, 0);
     hipNode.name = name + "_hip";
+    hipNode.add(hipMesh);
 
     // Ankle Node: the one near the foot/paw/whatever
-    var ankleNode = createLegArmNode(material);
+    var ankleNode = createAxes(1);
+    var ankleMesh = createLegArmNode(material);
     ankleNode.position.set(1, 0, 0);
     ankleNode.name = name + "_ankle";
+    ankleNode.add(ankleMesh);
     hipNode.add(ankleNode);
 
     // Paw node: the hand for the toad
-    var pawNode = createPaw(material);
+    var pawNode = createAxes(1);
+    var pawMesh = createPaw(material);
     pawNode.position.set(1, 0, 0);
     pawNode.name = name + "_paw";
+    pawNode.add(pawMesh);
     ankleNode.add(pawNode);
 
     return hipNode;
@@ -272,9 +286,11 @@ function createBody(torsoNode)
     torsoNode.add(rightArm);
 
     // Upper head
-    var upperHeadNode = createHalfHead(mainMaterial);
+    var upperHeadNode = createAxes(1);
+    var upperHeadMesh = createHalfHead(mainMaterial);
     upperHeadNode.translateX(1.309); // Center of torso
     upperHeadNode.name = "upperHead";
+    upperHeadNode.add(upperHeadMesh);
     torsoNode.add(upperHeadNode);
 
     // Eyes
@@ -282,19 +298,21 @@ function createBody(torsoNode)
     var leftEyeNode = createEyeBall();
     leftEyeNode.position.set(0.1, 0.15, -0.15);
     leftEyeNode.name = "leftEye";
-    upperHeadNode.add(leftEyeNode);
+    upperHeadMesh.add(leftEyeNode);
 
     // Right eye
     var rightEyeNode = createEyeBall();
     rightEyeNode.position.set(0.1, 0.15, 0.15);
     rightEyeNode.name = "rightEye";
-    upperHeadNode.add(rightEyeNode);
+    upperHeadMesh.add(rightEyeNode);
 
     // Lower head
-    var lowerHeadNode = createHalfHead(mainMaterial);
+    var lowerHeadNode = createAxes(1);
+    var lowerHeadMesh = createHalfHead(mainMaterial);
     lowerHeadNode.rotateX(3.14159); // Turns around to be lower part
-    lowerHeadNode.position.set(1.309, -0.1, 0);
+    lowerHeadNode.position.set(1.309, -0.05, 0);
     lowerHeadNode.name = "lowerHead";
+    lowerHeadNode.add(lowerHeadMesh);
     torsoNode.add(lowerHeadNode);
 
     return torsoNode;
@@ -406,26 +424,6 @@ function onKeyUp(event)
             break;
         }
 
-        // #72, key H, hip move
-        case 72: {
-            break;
-        }
-
-        // #75, key K, knee move
-        case 75: {
-            break;
-        }
-
-        // #65, key A, ankle move
-        case 65: {
-            break;
-        }
-
-        // #84, key T, toe (paw) move
-        case 84: {
-            break;
-        }
-
         // Default: log it in console...
         default: {
             console.log("Key Up event: key #" + String(event.keyCode) + " is up.");
@@ -474,10 +472,22 @@ function onKeyDown(event)
             break;
         }
 
+        // #107, plus key
+        case 107: {
+            break;
+        }
+
+        // #109, minus key
+        case 109: {
+            break;
+        }
+
         // Default: log it in console...
         default: {
             console.log("Key Down event: key #" + String(event.keyCode) + " is down.");
         }
     }
+
+
 }
 
