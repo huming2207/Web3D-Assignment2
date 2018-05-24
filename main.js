@@ -198,13 +198,15 @@ function createLeg(material, name)
     var hipNode = createAxes(1);
     var hipMesh = createLegArmNode(material);
     hipNode.position.set(0, 0, 0);
+    hipMesh.position.set(0.5, 0, 0);
     hipNode.name = name + "_hip";
-    hipNode.add(hipMesh)
+    hipNode.add(hipMesh);
 
     // Knee node: the one in the middle
     var kneeNode = createAxes(1);
     var kneeMesh = createLegArmNode(material);
     kneeNode.position.set(1, 0, 0);
+    kneeMesh.position.set(0.5, 0, 0);
     kneeNode.name = name + "_knee";
     kneeNode.add(kneeMesh);
     hipNode.add(kneeNode);
@@ -213,14 +215,16 @@ function createLeg(material, name)
     var ankleNode = createAxes(1);
     var ankleMesh = createLegArmNode(material);
     ankleNode.position.set(1, 0, 0);
+    ankleMesh.position.set(0.5, 0, 0);
     ankleNode.name = name + "_ankle";
     ankleNode.add(ankleMesh);
     kneeNode.add(ankleNode);
-    
+
     // Paw node: the hand for the toad
     var pawNode = createAxes(1);
     var pawMesh = createPaw(material);
     pawNode.position.set(1, 0, 0);
+    pawMesh.position.set(0.5, 0, 0);
     pawNode.name = name + "_paw";
     pawNode.add(pawMesh);
     ankleNode.add(pawNode);
@@ -235,6 +239,7 @@ function createArm(material, name)
     var hipNode = createAxes(1);
     var hipMesh = createLegArmNode(material);
     hipNode.position.set(0, 0, 0);
+    hipMesh.position.set(0.5, 0, 0);
     hipNode.name = name + "_hip";
     hipNode.add(hipMesh);
 
@@ -242,6 +247,7 @@ function createArm(material, name)
     var ankleNode = createAxes(1);
     var ankleMesh = createLegArmNode(material);
     ankleNode.position.set(1, 0, 0);
+    ankleMesh.position.set(0.5, 0, 0);
     ankleNode.name = name + "_ankle";
     ankleNode.add(ankleMesh);
     hipNode.add(ankleNode);
@@ -250,6 +256,7 @@ function createArm(material, name)
     var pawNode = createAxes(1);
     var pawMesh = createPaw(material);
     pawNode.position.set(1, 0, 0);
+    pawMesh.position.set(0.5, 0, 0);
     pawNode.name = name + "_paw";
     pawNode.add(pawMesh);
     ankleNode.add(pawNode);
@@ -265,24 +272,24 @@ function createBody(torsoNode)
 
     // Left leg
     var leftLeg = createLeg(mainMaterial, "leftLeg");
-    leftLeg.position.set(-1.2, 0, -0.45);
+    leftLeg.position.set(-1, 0, 0);
     leftLeg.rotation.y = 2.5;
     torsoNode.add(leftLeg);
 
     // Right leg
     var rightLeg = createLeg(mainMaterial, "rightLeg");
-    rightLeg.position.set(-1.2, 0, 0.45);
+    rightLeg.position.set(-1, 0, 0);
     rightLeg.rotation.y = -2.5;
     torsoNode.add(rightLeg);
 
     // Left arm
     var leftArm = createArm(mainMaterial, "leftArm");
-    leftArm.position.set(1.309, 0, -0.588);
+    leftArm.position.set(0.809, 0, -0.588);
     torsoNode.add(leftArm);
 
     // Right arm
     var rightArm = createArm(mainMaterial, "rightArm");
-    rightArm.position.set(1.309, 0, 0.588);
+    rightArm.position.set(0.809, 0, 0.588);
     torsoNode.add(rightArm);
 
     // Upper head
