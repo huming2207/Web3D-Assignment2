@@ -1,5 +1,6 @@
 "use strict";
 
+// Materials are set to global variables to as there are multiple usages across different functions
 var mainMaterial;
 var torsoMaterial;
 var eyeMaterial;
@@ -10,10 +11,9 @@ var selectedNodes; // e.g. hip or knee
 // Register key stroke event handlers
 document.onkeyup = onKeyUp;
 document.onkeydown = onKeyDown;
-  
+
 // returns square bipyramid (octahedron) object
-function createLegArmNode(material)
-{
+function createLegArmNode(material) {
     var geometry = new THREE.Geometry();
 
     // Vectors, equals to "Coordinate" node in x3dom
@@ -37,13 +37,12 @@ function createLegArmNode(material)
     geometry.computeFaceNormals();
 
     // Create the mesh with geometry set above and material passed in before
-    var arm = new THREE.Mesh(geometry, material); 
+    var arm = new THREE.Mesh(geometry, material);
     // arm.add(createAxes(3));
     return arm;
 }
 
-function createEyeBall()
-{
+function createEyeBall() {
     var geometry = new THREE.Geometry();
 
     // Vectors, equals to "Coordinate" node in x3dom
@@ -73,8 +72,7 @@ function createEyeBall()
 }
 
 // returns a half head ("slice" the head at x/z axis) object
-function createHalfHead(material)
-{
+function createHalfHead(material) {
     var geometry = new THREE.Geometry();
 
     // Vectors
@@ -100,8 +98,7 @@ function createHalfHead(material)
 }
 
 // returns pentagonal bipyramid (decahedron) object
-function createTorso(material)
-{
+function createTorso(material) {
     var geometry = new THREE.Geometry();
 
     // Vectors, equals to "Coordinate" node in x3dom
@@ -112,7 +109,7 @@ function createTorso(material)
     geometry.vertices.push(new THREE.Vector3(0.809, 0, -0.588));
     geometry.vertices.push(new THREE.Vector3(-0.309, 0, -0.951));
     geometry.vertices.push(new THREE.Vector3(0, -0.5, 0));
-    
+
     // Faces, equals to "IndexedFaceSet" node in x3dom
     geometry.faces.push(new THREE.Face3(1, 0, 5));
     geometry.faces.push(new THREE.Face3(1, 2, 0));
@@ -162,10 +159,9 @@ function createTorso(material)
     return body;
 }
 
-function createPaw(material)
-{
+function createPaw(material) {
     var geometry = new THREE.Geometry();
-    
+
     // Vectors again, equals to "Coordinate" node in x3dom
     geometry.vertices.push(new THREE.Vector3(0, 0, 0.25));
     geometry.vertices.push(new THREE.Vector3(0, 0, -0.25));
@@ -178,22 +174,19 @@ function createPaw(material)
 
     // Create the mesh with geometry set above and material pssed in before
     var paw = new THREE.Mesh(geometry, material);
-    // paw.add(createAxes(3));
     scene.add(paw);
     return paw;
 }
 
 // Create pond
-function createPond()
-{
+function createPond() {
     var geometry = new THREE.CylinderGeometry(20, 20, 0.5, 128, 128, false, 0);
-    var material = new THREE.MeshLambertMaterial({color: 0x33aaaa}) ;
+    var material = new THREE.MeshLambertMaterial({color: 0x33aaaa});
     return new THREE.Mesh(geometry, material);
 }
 
 // Create leg, which is a map with 3 items
-function createLeg(material, name)
-{
+function createLeg(material, name) {
     // Hip node: the one near torso
     var hipNode = createAxes(1);
     var hipMesh = createLegArmNode(material);
@@ -233,8 +226,7 @@ function createLeg(material, name)
 }
 
 // Create leg, which is a map with 3 items
-function createArm(material, name)
-{
+function createArm(material, name) {
     // Hip node: the one near torso
     var hipNode = createAxes(1);
     var hipMesh = createLegArmNode(material);
@@ -265,8 +257,7 @@ function createArm(material, name)
 }
 
 // Merge components to body
-function createBody(torsoNode)
-{
+function createBody(torsoNode) {
     // Torso
     torsoNode.name = "torso";
 
@@ -326,8 +317,7 @@ function createBody(torsoNode)
 }
 
 // Create axes for each component
-function createAxes(length)
-{
+function createAxes(length) {
     var geometry = new THREE.Geometry();
     geometry.vertices.push(new THREE.Vector3(0, 0, 0));
     geometry.vertices.push(new THREE.Vector3(length, 0, 0));
@@ -341,7 +331,7 @@ function createAxes(length)
     geometry.colors.push(new THREE.Color(0x00ff00));
     geometry.colors.push(new THREE.Color(0x0000ff));
     geometry.colors.push(new THREE.Color(0x0000ff));
-    
+
     var material = new THREE.LineBasicMaterial();
     material.vertexColors = THREE.VertexColors;
 
@@ -352,14 +342,13 @@ function createAxes(length)
 }
 
 // "Main" function
-function init()
-{
+function init() {
     console.log("Initializing...");
 
     // Create scene and camera
     scene = new THREE.Scene();
     scene.add(createAxes(5));
-    var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000); 
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5;
 
     // Create material with color 0xff9966 as required
@@ -376,7 +365,7 @@ function init()
     pond.position.set(0, -1.5, 0);
 
     // Create light here
-    var light = new THREE.AmbientLight(0xffffff);  
+    var light = new THREE.AmbientLight(0xffffff);
     scene.add(body);
     scene.add(light);
     scene.add(pond);
@@ -404,13 +393,11 @@ function init()
     requestAnimationFrame(animate);
     controls.update();
 
-    function render() 
-    {
+    function render() {
         renderer.render(scene, camera);
     }
 
-    function animate()
-    {
+    function animate() {
         render();
         requestAnimationFrame(animate);
         controls.update();
@@ -418,9 +405,8 @@ function init()
 }
 
 // Handle key up event (restore status)
-function onKeyUp(event)
-{
-    switch(event.keyCode) {
+function onKeyUp(event) {
+    switch (event.keyCode) {
 
         // #77, key M, wire frame mode
         case 77: {
@@ -446,9 +432,8 @@ function onKeyUp(event)
 
 // Handle key down event (apply status)
 // Key code reference from MDN: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
-function onKeyDown(event)
-{
-    switch(event.keyCode) {
+function onKeyDown(event) {
+    switch (event.keyCode) {
 
         // #77, key M, wire frame mode
         case 77: {
@@ -511,32 +496,34 @@ function onKeyDown(event)
     }
 }
 
-function increaseJointZ()
-{
+function increaseJointZ() {
+    // Default minimum rotation is 0 rad (0 deg)
     var maximum = 0;
 
-    if(selectedNodes === "knee" || selectedNodes === "ankle") {
+    // Knees and ankles are 3.14 rad (180 deg)
+    if (selectedNodes === "knee" || selectedNodes === "ankle") {
         maximum = 3.14;
     }
 
     scene.traverse(function (object) {
-        if(object.name.includes(selectedNodes) && object.rotation.z < maximum) {
+        if (object.name.includes(selectedNodes) && object.rotation.z < maximum) {
             object.rotation.z = object.rotation.z + 0.1;
             console.log("Rotating z-axis for " + object.name + ", radian value " + String(object.rotation.z));
         }
     });
 }
 
-function decreaseJointZ()
-{
+function decreaseJointZ() {
+    // Default minimum rotation is -1.57 rad (-90 deg)
     var minimum = -1.57;
 
-    if(selectedNodes === "knee" || selectedNodes === "ankle") {
+    // Default minimum rotation is -1.57 rad (-90 deg)
+    if (selectedNodes === "knee" || selectedNodes === "ankle") {
         minimum = -3.14;
     }
 
     scene.traverse(function (object) {
-        if(object.name.includes(selectedNodes) && object.rotation.z > minimum) {
+        if (object.name.includes(selectedNodes) && object.rotation.z > minimum) {
             object.rotation.z = object.rotation.z - 0.1;
             console.log("Rotating z-axis for " + object.name + ", radian value " + String(object.rotation.z));
         }
