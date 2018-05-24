@@ -184,12 +184,11 @@ function createPaw(material)
 }
 
 // Create pond
-function createPond(material)
+function createPond()
 {
-    var geometry = new THREE.BoxGeometry(20, 20, 0.1);
-    var pond = new THREE.Mesh(geometry, material);
-    pond.add(createAxes(5));
-    return pond;
+    var geometry = new THREE.CylinderGeometry(20, 20, 0.5, 128, 128, false, 0);
+    var material = new THREE.MeshLambertMaterial({color: 0x33aaaa}) ;
+    return new THREE.Mesh(geometry, material);
 }
 
 // Create leg, which is a map with 3 items
@@ -365,10 +364,15 @@ function init()
     var torsoNode = createTorso(torsoMaterial);
     var body = createBody(torsoNode);
 
+    // Add pond
+    var pond = createPond();
+    pond.position.set(0, -1.5, 0);
+
     // Create light here
     var light = new THREE.AmbientLight(0xffffff);  
     scene.add(body);
     scene.add(light);
+    scene.add(pond);
 
     // Log out all body stuff for debugging
     console.log(body);
