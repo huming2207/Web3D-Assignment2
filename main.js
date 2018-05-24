@@ -529,3 +529,21 @@ function decreaseJointZ() {
         }
     });
 }
+
+function lerp(startKey, startValue, endKey, endValue, key) {
+     if(key === startKey) return startValue;
+     else if(key === endKey) return endValue;
+     else return startValue + ((key - startKey)/(startKey + endKey)) * (endValue - startValue);
+}
+
+function findInterval(keys, keyToFind) {
+    for(var index = 0; index < keys.length; index += 1) {
+        if(keys[index] > keyToFind) {
+            return keys[index];
+        }
+    }
+}
+
+function interpolate(keys, values, key) {
+    
+}
