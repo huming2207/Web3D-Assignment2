@@ -525,7 +525,7 @@ function decreaseJointZ() {
     scene.traverse(function (object) {
         if (object.name.includes(selectedNodes) && object.rotation.z > minimum) {
             object.rotation.z = object.rotation.z - 0.1;
-            console.log("Rotating z-axis for " + object.name + ", radian value " + String(object.rotation.z));
+            console.log("Rotating z-axis f or " + object.name + ", radian value " + String(object.rotation.z));
         }
     });
 }
@@ -533,7 +533,7 @@ function decreaseJointZ() {
 function lerp(startKey, startValue, endKey, endValue, key) {
      if(key === startKey) return startValue;
      else if(key === endKey) return endValue;
-     else return startValue + ((key - startKey)/(startKey + endKey)) * (endValue - startValue);
+     else return startValue + ((key - startKey)/(endKey - startKey)) * (endValue - startValue);
 }
 
 function findInterval(keys, keyToFind) {
@@ -545,5 +545,5 @@ function findInterval(keys, keyToFind) {
 }
 
 function interpolate(keys, values, key) {
-    
+    var clock = new THREE.Clock();
 }
