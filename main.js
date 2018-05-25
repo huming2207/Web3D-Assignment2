@@ -530,20 +530,32 @@ function decreaseJointZ() {
     });
 }
 
-function lerp(startKey, startValue, endKey, endValue, key) {
-     if(key === startKey) return startValue;
-     else if(key === endKey) return endValue;
-     else return startValue + ((key - startKey)/(endKey - startKey)) * (endValue - startValue);
+// Linear interpolation calculation, using formula: v = v1 + (t - t1) / (t2 - t1) × (v2 - v1)
+function lerp(lowerBoundKey, lowerBoundValue, higherBoundKey, higherBoundValue, key) {
+     if(key === lowerBoundKey) return lowerBoundValue;
+     else if(key === higherBoundKey) return higherBoundValue;
+     else return lowerBoundValue +
+             ((key - lowerBoundKey)/(higherBoundKey - lowerBoundKey)) * (higherBoundValue - lowerBoundValue);
 }
 
+// Enter a lower bound key and get the higher bound key
 function findInterval(keys, keyToFind) {
     for(var index = 0; index < keys.length; index += 1) {
         if(keys[index] > keyToFind) {
             return keys[index];
         }
     }
+
+    return -1;
 }
 
-function interpolate(keys, values, key) {
-    var clock = new THREE.Clock();
+function interpolator(keys, values, key) {
+    var higherBoundKey = findInterval(keys, key);
+    if(higherBoundKey < 0) return; // If no higher bound found by findInterval() then just stop.
+
+    var lowerBoundValue = values[keys.indexOf(higherBoundKey) - 1];
+    var higherBoundValue = values[keys.indexOf(higherBoundKey)];
+    var lowerBoundKey = keys[keys.indexOf(higherBoundKey) - 1];
+
+    return lerp(lowerBoundKey, lowerBoundValue, higherBoundKey, higherBoundValue, key);
 }
