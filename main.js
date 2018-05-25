@@ -5,6 +5,7 @@ var mainMaterial;
 var torsoMaterial;
 var eyeMaterial;
 
+// ThreeJS objects
 var scene; // general scene
 var camera;
 var trackballControls;
@@ -15,6 +16,9 @@ var clock;
 var selectedNodes; // e.g. hip or knee
 var selectedArmLeg = "Leg";
 var selectedLeftRight = "left";
+
+// Animation
+var timeCount = 0;
 
 // Register key stroke event handlers
 document.onkeyup = onKeyUp;
@@ -409,7 +413,24 @@ function init() {
 }
 
 function animate() {
-    // console.log(clock.getDelta());
+
+    // Reset time counter every 1.5 seconds
+    if(timeCount > 1.5) {
+        timeCount = 0;
+    }
+
+    timeCount += clock.getDelta();
+
+    // Rotate ankles
+    ankleRotater(timeCount);
+
+    //  Rotate hips
+    leftLegRotater(timeCount);
+    rightLegRotater(timeCount);
+
+    // Move paws
+    anklePawMover(timeCount);
+
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
     trackballControls.update();
@@ -593,23 +614,71 @@ function findInterval(keys, keyToFind) {
         }
     }
 
-    return -1;
+    return 0;
 }
 
 // Main interpolator
 function interpolator(keys, values, key) {
     var higherBoundKey = findInterval(keys, key);
-    if(higherBoundKey < 0) return; // If no higher bound found by findInterval() then just stop.
 
     var lowerBoundValue = values[keys.indexOf(higherBoundKey) - 1];
     var higherBoundValue = values[keys.indexOf(higherBoundKey)];
     var lowerBoundKey = keys[keys.indexOf(higherBoundKey) - 1];
 
-    return lerp(lowerBoundKey, lowerBoundValue, higherBoundKey, higherBoundValue, key);
+    var result = lerp(lowerBoundKey, lowerBoundValue, higherBoundKey, higherBoundValue, key);
+    console.log(result);
+    return result;
 }
 
-function hipMover(timeCounter) {
+function leftLegRotater(time) {
     var keys = [0, 0.25, 0.5, 1, 1.25, 1.5]; // time keys
-    var values = []
+    var values = [2.5, 2.75, 3, 3, 2.75, 2.5]; // position (rotation) values
 
+    var resultValue = interpolator(keys, values, time);
+    scene.traverse(function (object) {
+        if (object.name.includes("leftLeg_hip")) {
+            // alert("Hip rotate: " + String(resultValue));
+            object.rotation.y = resultValue;
+        }
+    });
 }
+
+function rightLegRotater(time) {
+    var keys = [0, 0.25, 0.5, 1, 1.25, 1.5]; // time keys
+    var values = [-2.5, -2.75, -3, -3, -2.75, -2.5]; // position (rotation) values
+
+    var resultValue = interpolator(keys, values, time);
+    scene.traverse(function (object) {
+        if (object.name.includes("rightLeg_hip")) {
+            // alert("Hip rotate: " + String(resultValue));
+            object.rotation.y = resultValue;
+        }
+    });
+}
+
+function ankleRotater(time) {
+    var keys = [0, 0.25, 0.5, 1, 1.25, 1.5]; // time keys
+    var values = [-1, -0.75, -0.5, -0.5, -0.75, -1]; // position (rotation) values
+
+    var resultValue = interpolator(keys, values, time);
+    scene.traverse(function (object) {
+        if (object.name.includes("ankle")) {
+            // alert("Ankle rotate: " + String(resultValue));
+            object.rotation.z = resultValue;
+        }
+    });
+}
+
+function anklePawMover(time) {
+    var keys = [0, 0.25, 0.5, 1, 1.25, 1.5];
+    var values = [0.5, 1, 1, 1, 1, 0.5];
+
+    var resultValue = interpolator(keys, values, time);
+    scene.traverse(function (object) {
+        if (object.name.includes("ankle") || object.name.includes("paw")) {
+            // alert("Paw/ankle move: " + String(resultValue));
+            object.position.x = resultValue;
+        }
+    })
+}
+
