@@ -57,7 +57,8 @@ function createBody(torsoNode) {
     // Upper head
     var upperHeadNode = createAxes(1);
     var upperHeadMesh = createHalfHead(mainMaterial);
-    upperHeadNode.translateX(1.309); // Center of torso
+    upperHeadNode.position.set(0.809, 0, 0); // Center of torso
+    upperHeadMesh.position.set(0.5, 0, 0);
     upperHeadNode.name = "upperHead";
     upperHeadNode.add(upperHeadMesh);
     torsoNode.add(upperHeadNode);
@@ -79,7 +80,8 @@ function createBody(torsoNode) {
     var lowerHeadNode = createAxes(1);
     var lowerHeadMesh = createHalfHead(mainMaterial);
     lowerHeadNode.rotateX(3.14159); // Turns around to be lower part
-    lowerHeadNode.position.set(1.309, -0.05, 0);
+    lowerHeadNode.position.set(0.809, 0, 0);
+    lowerHeadMesh.position.set(0.5, 0, 0);
     lowerHeadNode.name = "lowerHead";
     lowerHeadNode.add(lowerHeadMesh);
     torsoNode.add(lowerHeadNode);
@@ -200,6 +202,9 @@ function animate() {
 
         // Move body
         bodyMover(timeCount);
+
+        // Open mouth
+        headMover(timeCount);
     }
 
     renderer.render(scene, camera);

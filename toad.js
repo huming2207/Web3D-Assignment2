@@ -78,9 +78,7 @@ function createHalfHead(material) {
 
     geometry.computeFaceNormals();
 
-    var halfHeadNode = new THREE.Mesh(geometry, material);
-    halfHeadNode.add(createAxes(2));
-    return halfHeadNode;
+    return new THREE.Mesh(geometry, material);
 }
 
 // returns pentagonal bipyramid (decahedron) object

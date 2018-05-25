@@ -90,8 +90,20 @@ function anklePawMover(time) {
     })
 }
 
+function headMover(time) {
+    var keys = [0, 0.25, 0.75, 1, 1.15, 1.5];
+    var values = [0, 0.1, 0.3, 0.5, 0.3, 0];
+
+    var resultValue = interpolator(keys, values, time);
+    scene.traverse(function (object) {
+        if (object.name.includes("lowerHead")) {
+            object.rotation.z = resultValue;
+        }
+    })
+}
+
 function bodyMover(time) {
-    var horizontalKeys = [0, 0.25, 0.5, 1, 1.25, 1.5];
+    var horizontalKeys = [0, 0.25, 0.75, 1, 1.35, 1.5];
     var horizontalValues = [0, 0.5, 1, 0.75, 0.5, 0];
 
     var horizontalValue = interpolator(horizontalKeys, horizontalValues, time);
