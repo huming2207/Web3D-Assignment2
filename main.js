@@ -14,11 +14,12 @@ var clock;
 
 // Key binding
 var selectedNodes; // e.g. hip or knee
-var selectedArmLeg = "Leg";
-var selectedLeftRight = "left";
+var selectedArmLeg = "";
+var selectedLeftRight = "";
 
 // Animation
 var timeCount = 0;
+var enableAnimation = false;
 
 // Register key stroke event handlers
 document.onkeyup = onKeyUp;
@@ -414,22 +415,28 @@ function init() {
 
 function animate() {
 
-    // Reset time counter every 1.5 seconds
-    if(timeCount > 1.5) {
-        timeCount = 0;
+    if(enableAnimation) {
+        // Reset time counter every 1.5 seconds
+        if(timeCount > 1.5) {
+            timeCount = 0;
+        }
+
+        timeCount += clock.getDelta();
+
+        // Rotate ankles
+        ankleRotater(timeCount);
+
+        //  Rotate hips
+        leftLegRotater(timeCount);
+        rightLegRotater(timeCount);
+        armHipRotater(timeCount);
+
+        // Move paws
+        anklePawMover(timeCount);
+
+        // Move body
+        bodyMover(timeCount);
     }
-
-    timeCount += clock.getDelta();
-
-    // Rotate ankles
-    ankleRotater(timeCount);
-
-    //  Rotate hips
-    leftLegRotater(timeCount);
-    rightLegRotater(timeCount);
-
-    // Move paws
-    anklePawMover(timeCount);
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
@@ -451,6 +458,12 @@ function onKeyUp(event) {
         // #76, key L, basic debug mode
         case 76: {
             mainMaterial.color.setHex(0x378015); // Set back to white
+            break;
+        }
+
+        // #80, key P, enable/disable simple animation
+        case 80: {
+            enableAnimation = !enableAnimation;
             break;
         }
 
@@ -625,9 +638,7 @@ function interpolator(keys, values, key) {
     var higherBoundValue = values[keys.indexOf(higherBoundKey)];
     var lowerBoundKey = keys[keys.indexOf(higherBoundKey) - 1];
 
-    var result = lerp(lowerBoundKey, lowerBoundValue, higherBoundKey, higherBoundValue, key);
-    console.log(result);
-    return result;
+    return lerp(lowerBoundKey, lowerBoundValue, higherBoundKey, higherBoundValue, key);
 }
 
 function leftLegRotater(time) {
@@ -637,7 +648,6 @@ function leftLegRotater(time) {
     var resultValue = interpolator(keys, values, time);
     scene.traverse(function (object) {
         if (object.name.includes("leftLeg_hip")) {
-            // alert("Hip rotate: " + String(resultValue));
             object.rotation.y = resultValue;
         }
     });
@@ -650,8 +660,19 @@ function rightLegRotater(time) {
     var resultValue = interpolator(keys, values, time);
     scene.traverse(function (object) {
         if (object.name.includes("rightLeg_hip")) {
-            // alert("Hip rotate: " + String(resultValue));
             object.rotation.y = resultValue;
+        }
+    });
+}
+
+function armHipRotater(time) {
+    var keys = [0, 0.25, 0.5, 1, 1.25, 1.5]; // time keys
+    var values = [0, -0.25, -0.5, -0.5, -0.25, 0]; // position (rotation) values
+
+    var resultValue = interpolator(keys, values, time);
+    scene.traverse(function (object) {
+        if (object.name.includes("hip") && object.name.includes("Arm")) {
+            object.rotation.z = resultValue;
         }
     });
 }
@@ -663,7 +684,6 @@ function ankleRotater(time) {
     var resultValue = interpolator(keys, values, time);
     scene.traverse(function (object) {
         if (object.name.includes("ankle")) {
-            // alert("Ankle rotate: " + String(resultValue));
             object.rotation.z = resultValue;
         }
     });
@@ -676,8 +696,24 @@ function anklePawMover(time) {
     var resultValue = interpolator(keys, values, time);
     scene.traverse(function (object) {
         if (object.name.includes("ankle") || object.name.includes("paw")) {
-            // alert("Paw/ankle move: " + String(resultValue));
             object.position.x = resultValue;
+        }
+    })
+}
+
+function bodyMover(time) {
+    var verticalKeys = [0, 0.25, 0.5, 1, 1.25, 1.5];
+    var verticalValues = [0, 0.5, 1, 1.5, 2, 2.5];
+
+    var horizontalKeys = [0, 0.25, 0.5, 1, 1.25, 1.5];
+    var horizontalValues = [0, 0.5, 1, 0.75, 0.5, 0];
+
+    var verticalValue = interpolator(verticalKeys, verticalValues, time);
+    var horizontalValue = interpolator(horizontalKeys, horizontalValues, time);
+    scene.traverse(function (object) {
+        if(object.name.includes("torso")) {
+            object.position.x = verticalValue;
+            object.position.y = horizontalValue;
         }
     })
 }
