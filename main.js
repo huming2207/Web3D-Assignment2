@@ -6,7 +6,15 @@ var torsoMaterial;
 var eyeMaterial;
 
 var scene; // general scene
+var camera;
+var trackballControls;
+var renderer;
+var clock;
+
+// Key binding
 var selectedNodes; // e.g. hip or knee
+var selectedArmLeg = "Leg";
+var selectedLeftRight = "left";
 
 // Register key stroke event handlers
 document.onkeyup = onKeyUp;
@@ -348,7 +356,7 @@ function init() {
     // Create scene and camera
     scene = new THREE.Scene();
     scene.add(createAxes(5));
-    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5;
 
     // Create material with color 0xff9966 as required
@@ -373,17 +381,23 @@ function init() {
     // Log out all body stuff for debugging
     console.log(body);
 
+    // Start clock
+    clock = new THREE.Clock();
+    clock.start();
+
     // Create trackball (mouse) control
-    var controls = new THREE.TrackballControls(camera);
-    controls.rotateSpeed = 1.0;
-    controls.zoomSpeed = 1.0;
-    controls.panSpeed = 1.0;
-    controls.staticMoving = true;
-    controls.addEventListener('change', render);
+    trackballControls = new THREE.TrackballControls(camera);
+    trackballControls.rotateSpeed = 1.0;
+    trackballControls.zoomSpeed = 1.0;
+    trackballControls.panSpeed = 1.0;
+    trackballControls.staticMoving = true;
+    trackballControls.addEventListener('change', function () {
+        renderer.render(scene, camera);
+    });
 
     // Start to render something...
     // Create renderer
-    var renderer = new THREE.WebGLRenderer(3);
+    renderer = new THREE.WebGLRenderer(3);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x404040, 1);
     renderer.render(scene, camera);
@@ -391,17 +405,14 @@ function init() {
     document.body.appendChild(renderer.domElement);
 
     requestAnimationFrame(animate);
-    controls.update();
+    trackballControls.update();
+}
 
-    function render() {
-        renderer.render(scene, camera);
-    }
-
-    function animate() {
-        render();
-        requestAnimationFrame(animate);
-        controls.update();
-    }
+function animate() {
+    // console.log(clock.getDelta());
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+    trackballControls.update();
 }
 
 // Handle key up event (restore status)
@@ -477,6 +488,34 @@ function onKeyDown(event) {
             break;
         }
 
+        // #37, left arrow key
+        case 37: {
+            selectedLeftRight = "left";
+            console.log("Set selected left/right type to " + selectedLeftRight);
+            break;
+        }
+
+        // #38, up arrow key
+        case 38: {
+            selectedArmLeg = "Arm";
+            console.log("Set selected arm/leg type to " + selectedArmLeg);
+            break;
+        }
+
+        // #37, right arrow key
+        case 39: {
+            selectedLeftRight = "right";
+            console.log("Set selected left/right type to " + selectedLeftRight);
+            break;
+        }
+
+        // #37, down arrow key
+        case 40: {
+            selectedArmLeg = "Leg";
+            console.log("Set selected arm/leg type to " + selectedArmLeg);
+            break;
+        }
+
         // #107, plus key
         case 187: {
             increaseJointZ();
@@ -506,7 +545,11 @@ function increaseJointZ() {
     }
 
     scene.traverse(function (object) {
-        if (object.name.includes(selectedNodes) && object.rotation.z < maximum) {
+        if (object.name.includes(selectedNodes)
+            && object.name.includes(selectedArmLeg)
+            && object.name.includes(selectedLeftRight)
+            && object.rotation.z < maximum)
+        {
             object.rotation.z = object.rotation.z + 0.1;
             console.log("Rotating z-axis for " + object.name + ", radian value " + String(object.rotation.z));
         }
@@ -523,7 +566,11 @@ function decreaseJointZ() {
     }
 
     scene.traverse(function (object) {
-        if (object.name.includes(selectedNodes) && object.rotation.z > minimum) {
+        if (object.name.includes(selectedNodes)
+            && object.name.includes(selectedArmLeg)
+            && object.name.includes(selectedLeftRight)
+            && object.rotation.z > minimum)
+        {
             object.rotation.z = object.rotation.z - 0.1;
             console.log("Rotating z-axis f or " + object.name + ", radian value " + String(object.rotation.z));
         }
@@ -549,6 +596,7 @@ function findInterval(keys, keyToFind) {
     return -1;
 }
 
+// Main interpolator
 function interpolator(keys, values, key) {
     var higherBoundKey = findInterval(keys, key);
     if(higherBoundKey < 0) return; // If no higher bound found by findInterval() then just stop.
@@ -558,4 +606,10 @@ function interpolator(keys, values, key) {
     var lowerBoundKey = keys[keys.indexOf(higherBoundKey) - 1];
 
     return lerp(lowerBoundKey, lowerBoundValue, higherBoundKey, higherBoundValue, key);
+}
+
+function hipMover(timeCounter) {
+    var keys = [0, 0.25, 0.5, 1, 1.25, 1.5]; // time keys
+    var values = []
+
 }
