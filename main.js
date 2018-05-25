@@ -23,6 +23,9 @@ var enableAnimation = false;
 var bodyXOffset = 0.01;
 var bodyZOffset = 0;
 
+// Toad count
+var toadCount = 5;
+
 
 // Merge components to body
 function createBody(torsoNode) {
@@ -124,9 +127,16 @@ function init() {
     torsoMaterial = new THREE.MeshLambertMaterial();
     eyeMaterial = new THREE.MeshLambertMaterial({color: 0x000000});
 
-    // Add body
-    var torsoNode = createTorso(torsoMaterial);
-    var body = createBody(torsoNode);
+    // Create multiple frogs with random positions
+    for(var toadIndex = 0; toadIndex < toadCount; toadIndex += 1) {
+        var randomX = Math.round(Math.random() * 20); // Random X axis
+        var randomZ = Math.round(Math.random() * 20); // Random Z axis
+        var torsoNode = createTorso(torsoMaterial);
+        var body = createBody(torsoNode);
+        body.position.set(randomX, 0, randomZ);
+        scene.add(body);
+    }
+
 
     // Add pond
     var pond = createPond();
@@ -134,7 +144,6 @@ function init() {
 
     // Create light here
     var light = new THREE.AmbientLight(0xffffff);
-    scene.add(body);
     scene.add(light);
     scene.add(pond);
 
@@ -216,7 +225,7 @@ function increaseJointZ() {
             && object.name.includes(selectedLeftRight)
             && object.rotation.z < maximum)
         {
-            object.rotation.z = object.rotation.z + 0.1;
+            object.rotation.z = object.rotation.z + 0.1; // Press once for +0.1 rad increase
             console.log("Rotating z-axis for " + object.name + ", radian value " + String(object.rotation.z));
         }
     });
@@ -226,7 +235,7 @@ function decreaseJointZ() {
     // Default minimum rotation is -1.57 rad (-90 deg)
     var minimum = -1.57;
 
-    // Default minimum rotation is -1.57 rad (-90 deg)
+    // Default minimum rotation is -3.14 rad (-180 deg)
     if (selectedNodes === "knee" || selectedNodes === "ankle") {
         minimum = -3.14;
     }
@@ -237,7 +246,7 @@ function decreaseJointZ() {
             && object.name.includes(selectedLeftRight)
             && object.rotation.z > minimum)
         {
-            object.rotation.z = object.rotation.z - 0.1;
+            object.rotation.z = object.rotation.z - 0.1; // Press once for -0.1 rad decrease
             console.log("Rotating z-axis f or " + object.name + ", radian value " + String(object.rotation.z));
         }
     });

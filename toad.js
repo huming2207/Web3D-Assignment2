@@ -166,7 +166,7 @@ function createPaw(material) {
 
 // Create pond
 function createPond() {
-    var geometry = new THREE.CylinderGeometry(20, 20, 0.5, 128, 128, false, 0);
+    var geometry = new THREE.CylinderGeometry(35, 35, 0.5, 128, 128, false, 0);
     var material = new THREE.MeshLambertMaterial({color: 0x33aaaa});
     return new THREE.Mesh(geometry, material);
 }

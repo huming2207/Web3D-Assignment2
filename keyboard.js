@@ -1,3 +1,5 @@
+"use strict";
+
 // Register key stroke event handlers
 document.onkeyup = onKeyUp;
 document.onkeydown = onKeyDown;

@@ -101,8 +101,8 @@ function bodyMover(time) {
 
             object.position.y = horizontalValue;
 
-            // Turn to a random direction if the distance is longer than 20 (radius of pond)
-            if(object.position.distanceTo(new THREE.Vector3(0, 0, 0)) > 12 && horizontalValue < 0.05) {
+            // Turn to a random direction if the distance is longer than 20
+            if(object.position.distanceTo(new THREE.Vector3(0, 0, 0)) > 30 && horizontalValue < 0.05) {
 
                 var rotationAngle = Math.random() * 3.14;
 
