@@ -4,6 +4,11 @@
 document.onkeyup = onKeyUp;
 document.onkeydown = onKeyDown;
 
+// Key binding
+var selectedNodes; // e.g. hip or knee
+var selectedArmLeg = "";
+var selectedLeftRight = "";
+
 // Handle key up event (restore status)
 function onKeyUp(event) {
     switch (event.keyCode) {

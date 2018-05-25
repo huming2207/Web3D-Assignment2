@@ -5,23 +5,17 @@ var mainMaterial;
 var torsoMaterial;
 var eyeMaterial;
 
-// ThreeJS objects
-var scene; // general scene
+// ThreeJS objects across different functions
+var scene;
 var camera;
 var trackballControls;
 var renderer;
 var clock;
 
-// Key binding
-var selectedNodes; // e.g. hip or knee
-var selectedArmLeg = "";
-var selectedLeftRight = "";
-
 // Animation
 var timeCount = 0;
 var enableAnimation = false;
 var bodyXOffset = 0.01;
-var bodyZOffset = 0;
 
 // Toad count
 var toadCount = 5;
